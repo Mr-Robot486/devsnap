@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DevSnap · snippet manager</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#x1FAA2;</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/base16/tomorrow-night.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ===== Left rail ===== -->
+  <aside class="rail">
+    <div class="rail-brand">
+      <span class="brand-mark">&lt;/&gt;</span>
+      <span class="brand-name">DevSnap</span>
+    </div>
+
+    <div class="rail-search">
+      <input id="search-input" type="text" placeholder="Search title, code, notes…" autocomplete="off">
+      <kbd>/</kbd>
+    </div>
+
+    <button id="new-snippet-btn" class="btn-primary rail-new">+ New snippet</button>
+
+    <div class="rail-section">
+      <div class="rail-section-title">Sort</div>
+      <select id="sort-select" class="rail-select">
+        <option value="newest">Newest first</option>
+        <option value="oldest">Oldest first</option>
+        <option value="title">Title A–Z</option>
+      </select>
+    </div>
+
+    <div class="rail-section">
+      <div class="rail-section-title">Language</div>
+      <div id="language-list" class="filter-list"></div>
+    </div>
+
+    <div class="rail-section rail-section-grow">
+      <div class="rail-section-title">Tags</div>
+      <div id="tag-list" class="filter-list"></div>
+    </div>
+
+    <div class="rail-footer" id="active-filters"></div>
+  </aside>
+
+  <!-- ===== Main column ===== -->
+  <main class="main">
+    <header class="main-header">
+      <h1 id="results-heading">All snippets</h1>
+      <span id="results-count" class="results-count"></span>
+    </header>
+
+    <div id="empty-state" class="empty-state" hidden>
+      <div class="empty-glyph">{ }</div>
+      <p class="empty-title">No snippets yet</p>
+      <p class="empty-body">Save your first snippet to start building your library.</p>
+      <button class="btn-primary" id="empty-new-btn">+ New snippet</button>
+    </div>
+
+    <div id="snippet-grid" class="snippet-grid"></div>
+  </main>
+</div>
+
+<!-- ===== Detail / editor panel ===== -->
+<div id="overlay" class="overlay" hidden></div>
+<div id="panel" class="panel" hidden>
+
+  <!-- View mode -->
+  <div id="view-mode" class="panel-inner">
+    <div class="panel-topbar">
+      <span id="view-language" class="lang-badge"></span>
+      <div class="panel-actions">
+        <button id="copy-btn" class="btn-ghost" title="Copy code">Copy</button>
+        <button id="edit-btn" class="btn-ghost">Edit</button>
+        <button id="delete-btn" class="btn-ghost btn-danger">Delete</button>
+        <button id="close-view-btn" class="btn-ghost btn-close" title="Close">&times;</button>
+      </div>
+    </div>
+    <h2 id="view-title" class="panel-title"></h2>
+    <p id="view-description" class="panel-description"></p>
+    <div id="view-tags" class="tag-row"></div>
+    <pre class="code-block"><code id="view-code"></code></pre>
+    <p id="view-meta" class="panel-meta"></p>
+  </div>
+
+  <!-- Edit / create mode -->
+  <form id="edit-form" class="panel-inner" hidden>
+    <div class="panel-topbar">
+      <h2 id="edit-heading" class="panel-title-sm">New snippet</h2>
+      <div class="panel-actions">
+        <button type="submit" class="btn-primary">Save snippet</button>
+        <button type="button" id="cancel-edit-btn" class="btn-ghost">Cancel</button>
+        <button type="button" id="close-edit-btn" class="btn-ghost btn-close" title="Close">&times;</button>
+      </div>
+    </div>
+
+    <div id="form-error" class="form-error" hidden></div>
+
+    <label class="field-label" for="f-title">Title</label>
+    <input id="f-title" class="field-input" type="text" placeholder="e.g. Debounce a function" required>
+
+    <div class="field-row">
+      <div class="field-col">
+        <label class="field-label" for="f-language">Language</label>
+        <select id="f-language" class="field-input"></select>
+      </div>
+      <div class="field-col">
+        <label class="field-label" for="f-tags">Tags <span class="field-hint">comma separated</span></label>
+        <input id="f-tags" class="field-input" type="text" placeholder="utils, performance">
+      </div>
+    </div>
+
+    <label class="field-label" for="f-description">Description <span class="field-hint">optional</span></label>
+    <input id="f-description" class="field-input" type="text" placeholder="What does this snippet do?">
+
+    <label class="field-label" for="f-code">Code</label>
+    <textarea id="f-code" class="field-textarea" spellcheck="false" placeholder="Paste or write your code here…" required></textarea>
+  </form>
+</div>
+
+<div id="toast" class="toast" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
